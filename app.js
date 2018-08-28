@@ -1,4 +1,4 @@
-var pedal = ctx.pedalBoard("Rock'n'Roll");
+var pedal = ctx.pedalBoard("Rock'n'Roll", "#pedalBoard");
 
 
 var mG = document.getElementById('mainGain');

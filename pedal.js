@@ -1,41 +1,28 @@
 ;(function(global, $){
     
+    
     //cria o contexto de áudio
     var ctx = new AudioContext();
-
-    //cria oscillator e liga ao destination
-    var osc1 = ctx.createOscillator();
-    var osc1Gain = ctx.createGain();
-    osc1.connect(osc1Gain);
-    osc1.frequency.value = 220;
-    osc1.start();
-    osc1Gain.gain.value = 0.5;
-
-    var osc2 = ctx.createOscillator();
-    var osc2Gain = ctx.createGain();
-    osc2.connect(osc2Gain);
-    osc2.frequency.value = 261.63;
-    osc2.start();
-    osc2Gain.gain.value = 0.5;
-
-    var osc3 = ctx.createOscillator();
-    var osc3Gain = ctx.createGain();
-    osc3.connect(osc3Gain);
-    osc3.frequency.value = 329.63;
-    osc3.start();
-    osc3Gain.gain.value = 0.5;
-
+  
+    //cria oscillator e liga ao destination    
+    
+    // var osc1 = ctx.createOscillator();
+    // var osc1Gain = ctx.createGain();
+    // osc1.connect(osc1Gain);
+    // osc1.frequency.value = 220;
+    // osc1.start();
+    // osc1Gain.gain.value = 0.5;
+    // osc1Gain.connect(mainGain);
     
     var mainGain = ctx.createGain();
-    osc1Gain.connect(mainGain);
-    osc2Gain.connect(mainGain);
-    osc3Gain.connect(mainGain);
+    
+    
     mainGain.gain.value = 0;
     mainGain.connect(ctx.destination);
     
     // 'new' Pedal
-    var pedalBoard = function(effectName){
-        return new pedalBoard.init(effectName); 
+    var pedalBoard = function(effectName, selector){
+        return new pedalBoard.init(effectName, selector); 
     }
 
     // prototype holds methods (to save memory space)
@@ -74,18 +61,42 @@
     
             }
 
-            
         }
 
     }
 
     // the actual object is created here, allowing us to 'new' an object without calling 'new'
-    pedalBoard.init = function(pedalBoardName){
+    pedalBoard.init = function(pedalBoardName, selector){
+
+        console.log($(selector));
         var self = this;
         self.pedalBoardName = pedalBoardName;        
         console.log('Pedal Board '+ self.pedalBoardName  +' created.');
+
+        // create oscillators
+        var oscillators = {};
+        self.oscillators = oscillators;
+
+        for(var i = 0; i <= 2; i++){
+            oscillators['osc' + i] = ctx.createOscillator(); 
+            oscillators['osc' + i].connect(mainGain);      
+            oscillators['osc' + i].start();
+            switch( i ){
+                case 0:
+                    oscillators['osc' + i].frequency.value = 220; 
+                    break;
+                case 1:
+                    oscillators['osc' + i].frequency.value = 261.63; 
+                    break;
+                default:
+                    oscillators['osc' + i].frequency.value = 329.63; 
+                    break;                    
+            }                   
+           
+        }       
+
     }
-    
+    // console.log(pedalBordoscillators);
     // trick borrowed from jQuery so we don't have to use the 'new' keyword
     pedalBoard.init.prototype = pedalBoard.prototype;
 
@@ -94,12 +105,6 @@
 
     //coloca o contexto de áudio, oscillator e gains no escopo global
     global.ctx = ctx;
-    global.osc1 = osc1;
-    global.osc1Gain = osc1Gain;
-    global.osc2 = osc2;
-    global.osc2Gain = osc2Gain;
-    global.osc3 = osc3;
-    global.osc3Gain = osc3Gain;
     global.mainGain = mainGain;
-
+    
 }(window, jQuery));
