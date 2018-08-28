@@ -21,8 +21,8 @@
     mainGain.connect(ctx.destination);
     
     // 'new' Pedal
-    var pedalBoard = function(effectName, selector){
-        return new pedalBoard.init(effectName, selector); 
+    var pedalBoard = function(effectName, element){
+        return new pedalBoard.init(effectName, element); 
     }
 
     // prototype holds methods (to save memory space)
@@ -66,9 +66,8 @@
     }
 
     // the actual object is created here, allowing us to 'new' an object without calling 'new'
-    pedalBoard.init = function(pedalBoardName, selector){
+    pedalBoard.init = function(pedalBoardName, element){
 
-        console.log($(selector));
         var self = this;
         self.pedalBoardName = pedalBoardName;        
         console.log('Pedal Board '+ self.pedalBoardName  +' created.');
@@ -77,6 +76,10 @@
         var oscillators = {};
         self.oscillators = oscillators;
 
+        if($(element).length > 0){
+            console.log( $(element) );
+        }
+        
         for(var i = 0; i <= 2; i++){
             oscillators['osc' + i] = ctx.createOscillator(); 
             oscillators['osc' + i].connect(mainGain);      
@@ -96,6 +99,9 @@
         }       
 
     }
+
+    
+
     // console.log(pedalBordoscillators);
     // trick borrowed from jQuery so we don't have to use the 'new' keyword
     pedalBoard.init.prototype = pedalBoard.prototype;
